@@ -182,7 +182,7 @@ class Blockchain {
    * Check balance of the specified address
    * @param {string} address - The address whose balance is to be checked
    */
-  _checkAddressBalance(address) {
+  _checkAddressBalance(address: string) {
     let balance = 0;
     this.blocks.map((block) => {
       block.transactions.map((transaction) => {
@@ -203,7 +203,7 @@ class Blockchain {
     luckyNumber,
     rewardAddress,
     amount = 0,
-    callback = (blockMined) => {
+    callback = (blockMined: boolean) => {
       blockMined;
     }
   ) {
@@ -224,19 +224,11 @@ class Blockchain {
    * @param {string} privateKey - The key used to secure the public address
    * @returns {string} - Public address
    */
-  _generatePublicAddress(privateKey) {
+  _generatePublicAddress(privateKey: string) {
     let publicAddress = sha256(privateKey);
     publicAddress = '' + parseInt(publicAddress, 16);
     publicAddress = sha256(publicAddress.split('').map((number, i) => Number(number) * Number(i)));
-    return 'EB' + publicAddress.slice(0, 34);
-  }
-
-  _generateWallet(key, amount = 0) {
-    if (this._checkAddressBalance(this._generatePublicAddress(key)) > 0) return this._generatePublicAddress(key);
-
-    const account = this._generatePublicAddress(key);
-    this._tryToMineTheBlock(this.luckyNumber, account, amount);
-    return account;
+    return 'f09a' + publicAddress.slice(0, 34);
   }
 
   /**
@@ -255,6 +247,7 @@ class Blockchain {
     } else {
       const transaction = new Transaction(from, to, amount);
       this.unconfirmedTransactions.push(transaction);
+      this.mineTheBlock();
     }
   }
 }
